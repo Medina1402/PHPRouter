@@ -1,3 +1,6 @@
+## Ejemplo simple de uso
+https://github.com/Medina1402/PHPRouter-example
+
 ## Enrutamiento basico
 Para crear las rutas necesitamos dos instancias principales como se muestra a continuacion:
 ```php
