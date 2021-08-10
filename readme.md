@@ -1,8 +1,10 @@
-## Ejemplo simple de uso
-https://github.com/Medina1402/PHPRouter-example
+# PHPRouter
+PHPRouter provides a fast and easy routing infrastructure for web development or API development, ideal for small projects.
 
-## Enrutamiento basico
-Para crear las rutas necesitamos dos instancias principales como se muestra a continuacion:
+Example: https://github.com/Medina1402/PHPRouter-example
+
+## Basic routing
+To create the routes, we need two main instances as shown below:
 ```php
 $router = new Router();
 $application = new Application($router);
@@ -13,7 +15,7 @@ $router->get("/", function () {
 
 $application->run();
 ```
-Aunque lo anterior es posible, no se recomienda, para ello se crearon dos clases para realizar una especie de Cast a los valores entrantes al callback, dichas clases son **Request** y **Response**, la forma adecuada de realizar el ejemplo anterior es la siguiente:
+Although the above is possible, it is not recommended, for this two classes were created to perform a kind of Cast to the incoming values to the callback: **Request** and **Response**.
 ```php
 $router = new Router();
 $application = new Application($router);
@@ -24,7 +26,7 @@ $router->get("/", function (Request $req, Response $res) {
 
 $application->run();
 ```
-Si queremos agregar rutas tenemos dos opciones, el agregarlo inmediatamente despues del ultimo metodo:
+If we want to add routes we have two options, adding immediately after the last method:
 ```php
 ...
 $router
@@ -36,7 +38,7 @@ $router
     });
 ...
 ```
-o usar la variable principal:
+or use the main variable:
 ```php
 ...
 $router->get("/", function (Request $req, Response $res) {
@@ -49,8 +51,8 @@ $router->post("/", function (Request $req, Response $res) {
 ...
 ```
 
-## Rutas dinamicas
-Existen ocaciones en las que la ruta esta conformada por datos dinamicos, por ejemplo al crear un usuario y querer acceder a su informacion, una opcion es que su identidicador forme parte de la URL.
+## Dynamic routes
+There are times when the route is made up of dynamic data, for example when creating a user and wanting to access their information, one option is that their identifier is part of the URL:
 ```php
 ...
 $router->get("/user/:id/profile", function (Request $req, Response $res) {
@@ -59,9 +61,8 @@ $router->get("/user/:id/profile", function (Request $req, Response $res) {
 });
 ...
 ```
-Al colocar los dos puntos indicamos que debe convertirse en una variable con el mismo nombre, la ruta se evalua pero al colocar ":" al inicio el valor que correspondiente a la posicion se almacena.
-```php
-    // El match utilizado no representa una funcion valida, es solo para indicar que las rutas son equivalentes    
+By placing the colon we indicate that it must become a variable with the same name.
+```php  
     match("/user/:id/profile", "/user/12548/profile") ==> true
     - id = 12548
     
@@ -76,8 +77,8 @@ Al colocar los dos puntos indicamos que debe convertirse en una variable con el 
     match("/user/:id/profile", "/user/12548/other") ==> false
 ```
 
-## Multiples Router
-Tenemos la posibilidad de trabajar cada instancia de Router por separado y unirlos al final, esto abre la posibilidad de poder trabajar en arquitecturas basada en modulos:
+## Multiple router
+We have the possibility to work each instance of Router separately and join them at the end, this opens the possibility of being able to work in architectures based on modules.
 ```php
 // file: module/User
 $routerUser = new Router();
@@ -107,7 +108,7 @@ $router->get("/", function (Request $req, Response $res) {
 
 $application->run();
 ```
-Si contamos con varios Router tenemos la posibilidad de agregarlos mediante un Array al nuevo Router:
+If we have several Routers we have the possibility of adding them through an Array to the new Router:
 ```php
 ...
 $router->usingArray([$routerUser, $other1, $other2, ...]);
@@ -115,26 +116,26 @@ $router->usingArray([$routerUser, $other1, $other2, ...]);
 ```
 
 ## Middleware
-El middleware es el que se ejecuta antes del controlador principal, es idoneo para comprobar parametros, ya que recibe los mismos parametros que el controlador.
-### Creacion de middleware
-Para la creacion de un Middleware debemos crear una clase que implemente la interfaz **Middleware** definida en el kernel:
+The middleware is the one that runs before the main controller, it is suitable for checking parameters, since it receives the same parameters as the controller.
+### Middleware creation
+To create a Middleware we must create a class that implements the **Middleware** interface defined in the kernel:
 ```php
 class AuthMiddleware implements Middleware
 ```
-El interface nos pedirá que la clase contenga un método estático **invoke** que se llamara antes de ejecutar el callback correspondiente.
+The interface will ask us that the class contains a static method **invoke** that will be called before executing the corresponding callback..
 ```php
 ...
 class AuthMiddleware implements Middleware {
     public function invoke(Request &$request, Response &$response) {}
 }
 ```
-### Agregar un middleware a una ruta
-Cada ruta de nuestro Router tiene la posibilidad de recibir tres parámetros:
+### Add a middleware to a route
+Each route of our Router has the possibility of receiving three parameters:
 - **Path**
 - **Callback**
 - **Middleware**
 
-Por defecto las rutas omiten el middleware, para activarlo solo debemos agregarlo como un tercer parámetro, pero solo debemos agregar la clase no una instancia o funcion.
+By default the routes omit the middleware, to activate it we only have to add it as a third parameter, but we only have to add the class.
 ```php
 ...
 $router->get("/", function (Request $req, Response $res) {
@@ -142,14 +143,14 @@ $router->get("/", function (Request $req, Response $res) {
 }, AuthMiddleware::class);
 ...
 ```
-### Enviar datos de un Middleware a un Callback
-Contamos con la posibilidad de modificar cada parametro de **Request** y **Response** por lo que podemos detener el servicio y evitar entrar al callback (al realizar un envio), pero tambien podemos agregar datos para que el callback los lea, podemos utilizar los siguiente campos para ello:
+### Send data from a Middleware to a Callback
+We have the possibility to modify each parameter of **Request** and **Response** so that we can stop the service and avoid entering the callback (when sending), but we can also add data so that the callback reads it , we can use the following fields for it:
 - body
 - header
 - values
 - params
 
-Cada uno de los anteriores cuenta con un metodo para agregar o modificar valores.
+Each of the above has a method to add or modify values.
 ```php
 ...
 class AuthMiddleware implements Middleware {
