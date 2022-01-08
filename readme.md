@@ -1,6 +1,18 @@
 # PHPRouter
 PHPRouter provides a fast and easy routing infrastructure for web development or API development, ideal for small projects.
 
+## Install using Composer
+The resource is added by executing the following script
+```shell
+composer require medina1402/php-router dev-main
+```
+When the dependency is added, a file must be created that loads the Composer content
+```php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+...
+```
+
 ## Basic routing
 To create the routes, we need two main instances as shown below:
 ```php
