@@ -1,8 +1,6 @@
 # PHPRouter
 PHPRouter provides a fast and easy routing infrastructure for web development or API development, ideal for small projects.
 
-Example: https://github.com/Medina1402/PHPRouter-example
-
 ## Basic routing
 To create the routes, we need two main instances as shown below:
 ```php
@@ -10,7 +8,7 @@ $router = new Router();
 $application = new Application($router);
 
 $router->get("/", function () {
-    echo "Hello word";
+    echo "Hello world";
 });
 
 $application->run();
@@ -21,7 +19,7 @@ $router = new Router();
 $application = new Application($router);
 
 $router->get("/", function (Request $req, Response $res) {
-    $res->send("Hello word");
+    $res->send("Hello world");
 });
 
 $application->run();
@@ -103,7 +101,7 @@ $application = new Application($router);
 $router->using($routerUser);
 
 $router->get("/", function (Request $req, Response $res) {
-    $res->send("Hello word");
+    $res->send("Hello world");
 });
 
 $application->run();
@@ -115,54 +113,42 @@ $router->usingArray([$routerUser, $other1, $other2, ...]);
 ...
 ```
 
+## Default routes
+We can assign a default route to each method that we need, this route will have the respective callback and middleware, but it will only be executed if an existing route is not found
+```php
+...
+$router = new Router();
+
+$router->get("/user/:id", function (Request $req, Response $res) {
+    $res->send("Hello world " . $req->getValue("id"));
+}, $middleware);
+
+$router->default("get", function (Request $req, Response $res) {
+    $res->send("<div> <h1>Error 404<h1> <a href='/'>return home</a> </div>");
+});
+...
+    - "/user/:id", "/user/125" => "Hello world 125"
+    - "/user/:id", "/user"     => "<div> <h1>Error 404<h1> <a href='/'>return home</a> </div>"
+```
+
 ## Middleware
 The middleware is the one that runs before the main controller, it is suitable for checking parameters, since it receives the same parameters as the controller.
-### Middleware creation
-To create a Middleware we must create a class that implements the **Middleware** interface defined in the kernel:
-```php
-class AuthMiddleware implements Middleware
-```
-The interface will ask us that the class contains a static method **invoke** that will be called before executing the corresponding callback..
 ```php
 ...
-class AuthMiddleware implements Middleware {
-    public function invoke(Request &$request, Response &$response) {}
-}
-```
-### Add a middleware to a route
-Each route of our Router has the possibility of receiving three parameters:
-- **Path**
-- **Callback**
-- **Middleware**
+$middleware = function (Request $req, Response $res) {
+    if ( !$req->getValue("id") ) $res->send("User ID no found");
+};
 
-By default the routes omit the middleware, to activate it we only have to add it as a third parameter, but we only have to add the class.
-```php
-...
-$router->get("/", function (Request $req, Response $res) {
-    $res->send("Hello word");
-}, AuthMiddleware::class);
-...
-```
-### Send data from a Middleware to a Callback
-We have the possibility to modify each parameter of **Request** and **Response** so that we can stop the service and avoid entering the callback (when sending), but we can also add data so that the callback reads it , we can use the following fields for it:
-- body
-- header
-- values
-- params
+$router->get("/user/:id", function (Request $req, Response $res) {
+    $res->send("Hello world " . $req->getValue("id"));
+}, $middleware);
 
-Each of the above has a method to add or modify values.
-```php
-...
-class AuthMiddleware implements Middleware {
-    public function invoke(Request &$request, Response &$response) {
-        $request->addValue("message", "Hello word");
-    }
-}
+// OR
 
-...
-
-$router->get("/", function (Request $req, Response $res) {
-    $res->send($req->getValue("message")); // "Hello word"
-}, AuthMiddleware::class);
+$router->get("/user/:id", function (Request $req, Response $res) {
+    $res->send("Hello world " . $req->getValue("id"));
+}, function (Request $req, Response $res) {
+    if ( !$req->getValue("id") ) $res->send("User ID no found");
+});
 ...
 ```

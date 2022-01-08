@@ -1,0 +1,20 @@
+{
+    "name": "medina1402/php-router",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Abraham Medina Carrillo",
+            "email": "abraham.medina.carrillo@uabc.edu.mx"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*"
+    },
+    "autoload":{
+	    "psr-0": {
+		    "PHPRouter": "src/"
+	    }
+    }
+}
