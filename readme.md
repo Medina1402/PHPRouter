@@ -1,6 +1,10 @@
 # PHPRouter
 PHPRouter provides a fast and easy routing infrastructure for web development or API development, ideal for small projects.
 
+![License MIT](https://img.shields.io/github/license/Medina1402/PHPRouter)
+![Language Program](https://img.shields.io/badge/PHP-v7.4.19-blue?logo=PHP)
+
+
 ## Install using Composer
 The resource is added by executing the following script
 ```shell
